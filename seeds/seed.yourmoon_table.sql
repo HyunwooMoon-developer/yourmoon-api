@@ -21,23 +21,26 @@ VALUES
  ('Candle'),
  ('ETC');
 
-INSERT INTO item_scent (scent)
-VALUES
-('No Scent'),
-('Lavender'),
-('Rose Petals');
 
-INSERT INTO item_color (color)
+INSERT INTO items (item_name, price, qty, img, description, category_id)
 VALUES
-('Ivory'),
-('Orange'),
-('Green'),
-('Blue');
+('Zigzag Soy Wax', 16.00, 10, './src/img/zig-zag-soy-wax.jpg', 'description!', 1 ),
+('Extra Item', 20.00, 10, './src/img/sample.jpg', 'description', 2);
 
-INSERT INTO items (item_name, price, qty, img, description, category_id, item_scent_id, item_color_id)
+INSERT INTO item_scent (item_id, scent)
 VALUES
-('Zigzag Soy Wax', 16.00, 10, './src/img/sample.jpg', 'description!', 1, 1, 2),
-('Extra Item', 20.00, 10, './src/img/sample.jpg', 'description', 2, 1, 1);
+(1, 'NONE'),
+(1, 'LAVENDER') ,
+(1, 'BLACK PEPPERMINT EUCALYPTUS'),
+(1, 'COTTON AND IRIS'),
+(2, 'NONE');
+
+INSERT INTO item_color (item_id, color)
+ VALUES
+ (1, 'YELLOW'),
+ (1, 'IVORY'),
+ (1, 'PINK'),
+ (2, 'NONE');
 
 INSERT INTO review (text, rating, user_id, item_id)
 VALUES

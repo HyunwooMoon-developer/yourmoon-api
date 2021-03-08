@@ -1,12 +1,14 @@
 CREATE TABLE categories (
     id SERIAL PRIMARY KEY,
-    category_name TEXT NOT NULL
+    category_name TEXT NOT NULL,
+    tax NUMERIC
 );
 
 CREATE TABLE items (
-    item_id SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     item_name TEXT NOT NULL,
     price DECIMAL(12,2) NOT NULL,
+    discount NUMERIC,
     qty NUMERIC CHECK (qty >= 0),
     img TEXT NOT NULL,
     description TEXT NOT NULL,
@@ -15,19 +17,13 @@ CREATE TABLE items (
 );
 
 CREATE TABLE item_scent (
+    item_id INTEGER REFERENCES items(id) ON DELETE CASCADE NOT NULL,
     id SERIAL PRIMARY KEY,
     scent TEXT
 );
 
 CREATE TABLE item_color (
+    item_id INTEGER REFERENCES items(id) ON DELETE CASCADE NOT NULL,
     id SERIAL PRIMARY KEY,
     color TEXT
 );
-
-ALTER TABLE items  
-    ADD COLUMN 
-    item_scent_id INTEGER REFERENCES item_scent(id) ON DELETE CASCADE NOT NULL;
-ALTER TABLE items  
-    ADD COLUMN 
-    item_color_id INTEGER REFERENCES item_color(id) ON DELETE CASCADE NOT NULL;
-
