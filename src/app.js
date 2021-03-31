@@ -9,6 +9,8 @@ const {NODE_ENV} = require('./config');
 const errorHandler = require('./errorHandler')
 const authRouter = require('./auth/auth-router')
 const usersRouter = require('./users/users-router')
+const categoryRouter = require('./category/category-router')
+const itemsRouter = require('./items/items-router')
 
 const app = express()
 //pipeline begins
@@ -24,6 +26,9 @@ app.use(cors())
 //route
 app.use('/api/auth', authRouter);
 app.use('/api/user', usersRouter);
+app.use('/api/category', categoryRouter);
+app.use('/api/item', itemsRouter);
+
 app.get('/', (req, res) => {
     res.send('Hello, boilerplate!');
 })
