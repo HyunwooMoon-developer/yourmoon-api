@@ -7,23 +7,11 @@ const ItemsService = require("./items-service");
 
 const itemsRouter = express.Router();
 
-const serializedItems = (item) => ({
-  id: item.id,
-  item_name: xss(item.item_name),
-  price: xss(item.price),
-  img: xss(item.img),
-  description: xss(item.description),
-  date_created: item.date_created,
-  category_id: item.category_id,
-});
-
-
-itemsRouter.route("/").get(async (req, res, next) => {
+itemsRouter.route("/").get((req, res, next) => {
   const db = req.app.get("db");
-
-  await ItemsService.getAllItems(db)
+  ItemsService.getAllItems(db)
     .then((items) => {
-      res.json(items.map(serializedItems));
+      res.json(ItemsService.serializeItems(items));
     })
     .catch(next);
 });
@@ -46,7 +34,33 @@ itemsRouter
       .catch(next);
   })
   .get((req, res, next) => {
-    res.json(serializedItems(res.item));
+    res.json(ItemsService.serializeItem(res.item));
+  });
+
+itemsRouter
+  .route("/:item_id/reviews")
+  .all(async (req, res, next) => {
+    const db = req.app.get("db");
+
+    await ItemsService.getItemById(db, req.params.item_id)
+      .then((item) => {
+        if (!item) {
+          return res.status(400).json({
+            error: { message: `Item doesn't exist` },
+          });
+        }
+        res.item = item;
+        next();
+      })
+      .catch(next);
+  })
+  .get((req, res, next) => {
+    const db = req.app.get("db");
+    ItemsService.getReviewForItem(db, req.params.item_id)
+      .then((review) => {
+        res.json(ItemsService.serializeItemReviews(review));
+      })
+      .catch(next);
   });
 
 module.exports = itemsRouter;
