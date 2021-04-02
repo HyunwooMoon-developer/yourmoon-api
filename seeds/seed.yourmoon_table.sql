@@ -63,7 +63,7 @@ VALUES
 (1, 1),
 (1, 2),
 (2, 1),
-(2, 2);
+(2, 3);
 
 INSERT INTO color(name)
 VALUES

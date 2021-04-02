@@ -18,9 +18,15 @@ const ItemsService = {
         "i.category_id",
         ...userField,
         db.raw(`count(DISTINCT review) AS number_of_reviews`),
-        db.raw(`AVG(review.rating) AS average_review_rating`)
+        db.raw(`AVG(review.rating) AS average_review_rating`),
       )
-      .leftJoin("review", "i.id", "review.item_id")
+      .select(db.raw(`ARRAY_AGG(DISTINCT scent.name) AS scents`))
+      .fullOuterJoin("scent_item", {"scent_item.item_id" : "i.id"})
+      .fullOuterJoin("scent", {"scent_item.scent_id": "scent.id"})
+      .select(db.raw(`ARRAY_AGG(DISTINCT color.name) AS colors`))
+      .fullOuterJoin("color_item", {"color_item.item_id" : "i.id"})
+      .fullOuterJoin("color", {"color_item.color_id" : "color.id"})
+      .leftJoin("review", {"i.id" :  "review.item_id"})
       .leftJoin("yourmoon_user AS user", "i.user_id", "user.id")
       .groupBy("i.id", "user.id");
   },
@@ -58,6 +64,8 @@ const ItemsService = {
       img: itemData.img,
       description: xss(itemData.description),
       price: xss(itemData.price),
+      colors : itemData.colors,
+      scents: itemData.scents,
       user: itemData.user || {},
       number_of_reviews: Number(itemData.number_of_reviews) || 0,
       average_review_rating: Math.round(itemData.average_review_rating) || 0,
