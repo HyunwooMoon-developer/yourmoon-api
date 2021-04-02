@@ -26,7 +26,8 @@ reviewRouter.route("/").post(requireAuth, jsonParser, (req, res, next) => {
     .then((review) => {
       res
         .status(201)
-        .location(path.posix.join(req.originalUrl, `/${review.id}`));
+        .location(path.posix.join(req.originalUrl, `/${review.id}`))
+        .json(review);
     })
     .catch(next);
 });
