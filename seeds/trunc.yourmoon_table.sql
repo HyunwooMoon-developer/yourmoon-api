@@ -1,7 +1,10 @@
 TRUNCATE
- yourmoon_user,
- categories,
+review,
  items,
- cart,
- review
+ categories,
+ yourmoon_user,
+ scent_item,
+ color_item,
+ scent,
+ color
  RESTART IDENTITY CASCADE;

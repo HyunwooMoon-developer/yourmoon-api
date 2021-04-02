@@ -29,7 +29,7 @@ app.use("/api/user", usersRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/item", itemsRouter);
 app.use("/api/review", reviewRouter);
-app.use("/api/cart", cartRouter);
+app.use("/api/user/cart", cartRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello, boilerplate!");

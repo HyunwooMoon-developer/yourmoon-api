@@ -1,11 +1,14 @@
 BEGIN
 
 TRUNCATE
- cart,
  review,
  items,
  categories,
  yourmoon_user,
+ scent_item,
+ color_item,
+ scent,
+ color
  RESTART IDENTITY CASCADE;
 
 INSERT INTO yourmoon_user (user_name, full_name, password)
@@ -49,7 +52,31 @@ VALUES
 ('very nice', 5, 3, 4),
 ('very nice', 4, 2, 4);
 
+INSERT INTO scent(name)
+VALUES
+('LEMON'),
+('APPLE'),
+('PINEAPPLE');
 
+INSERT INTO scent_item(item_id, scent_id)
+VALUES
+(1, 1),
+(1, 2),
+(2, 1),
+(2, 2);
 
+INSERT INTO color(name)
+VALUES
+('red'),
+('yellow'),
+('none');
+
+INSERT INTO color_item(item_id, color_id)
+VALUES
+(1,1),
+(1,2),
+(1,3),
+(2, 1),
+(2, 3);
 
 COMMIT;
