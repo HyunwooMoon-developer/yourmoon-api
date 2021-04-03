@@ -5,7 +5,10 @@ const xss = require("xss");
 const Treeize = require("treeize");
 
 const ItemsService = {
-  getAllItems(db) {
+  getAllItems(db, page) {
+    const itemPerPage = 4;
+    const offset = itemPerPage * (page -1)
+
     return db
       .from("items AS i")
       .select(
@@ -28,7 +31,10 @@ const ItemsService = {
       .fullOuterJoin("color", {"color_item.color_id" : "color.id"})
       .leftJoin("review", {"i.id" :  "review.item_id"})
       .leftJoin("yourmoon_user AS user", "i.user_id", "user.id")
-      .groupBy("i.id", "user.id");
+      .groupBy("i.id", "user.id")
+      .orderBy('date_created', 'desc')
+      .limit(itemPerPage)
+      .offset(offset)
   },
   getItemById(db, id) {
     return this.getAllItems(db).where("i.id", id).first();
