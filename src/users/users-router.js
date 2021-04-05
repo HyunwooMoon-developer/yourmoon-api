@@ -40,12 +40,12 @@ usersRouter.post("/", jsonParser, async (req, res, next) => {
     const user = await UsersService.insertUser(req.app.get("db"), newUser);
 
     const newCart = {
-        user_id: user.id,
-        date_created : "now()",
-    }
+      user_id: user.id,
+      date_created: "now()",
+    };
 
-    console.log('newCart',newCart)
-    await CartService.insertCart(req.app.get('db'), newCart);
+    console.log("newCart", newCart);
+    await CartService.insertCart(req.app.get("db"), newCart);
 
     res
       .status(201)

@@ -9,8 +9,7 @@ const itemsRouter = express.Router();
 
 itemsRouter.route("/").get((req, res, next) => {
   const db = req.app.get("db");
-  const page = req.query.page || 1;
-  ItemsService.getAllItems(db, page)
+  ItemsService.getAllItems(db)
     .then((items) => {
       res.json(ItemsService.serializeItems(items));
     })

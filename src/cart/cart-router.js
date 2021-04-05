@@ -23,7 +23,7 @@ cartRouter
   .post(jsonParser, (req, res, next) => {
     const db = req.app.get("db");
 
-    console.log('req.body',req.body)
+    console.log("req.body", req.body);
     const { item_id, qty, scent, color } = req.body;
     const user_id = req.user.id;
     CartService.getCartForUser(db, user_id)
@@ -47,7 +47,7 @@ cartRouter
         } else {
           item = await CartService.insertItemCart(db, newItem);
         }
-        res.status(201).json({...item, scent, color})
+        res.status(201).json({ ...item, scent, color });
       })
       .catch(next);
   })

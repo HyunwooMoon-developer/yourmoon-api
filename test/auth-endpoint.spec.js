@@ -8,7 +8,7 @@ const helpers = require("./test-helpers");
 describe("Auth Endpoints", () => {
   let db;
 
-  const testUsers = helpers.makeUsersArray();
+  const { testUsers } = helpers.makeYourmoonFixture();
   const testUser = testUsers[0];
 
   before("make knex instance", () => {
@@ -74,7 +74,7 @@ describe("Auth Endpoints", () => {
       };
 
       const expectedToken = jwt.sign(
-        { user_id: testUser.id },
+        { user_id: testUser.id, full_name: testUser.full_name },
         process.env.JWT_SECRET,
         {
           subject: testUser.user_name,

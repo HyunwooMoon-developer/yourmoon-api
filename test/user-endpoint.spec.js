@@ -9,7 +9,7 @@ const { expect } = require("chai");
 describe("Users Endpoints", () => {
   let db;
 
-  const testUsers = helpers.makeUsersArray();
+  const { testUsers } = helpers.makeYourmoonFixture();
   const testUser = testUsers[0];
 
   before("make knex instance", () => {
@@ -131,45 +131,45 @@ describe("Users Endpoints", () => {
       });
     });
     context(`Happy Path`, () => {
-        it(`responds 201, serialized user with no password`, ()=> {
-            const newUser = {
-                user_name : 'test user_name',
-                full_name : 'test full_name',
-                password  : '11!!AAaa',
-            };
+      it(`responds 201, serialized user with no password`, () => {
+        const newUser = {
+          user_name: "test user_name",
+          full_name: "test full_name",
+          password: "11!!AAaa",
+        };
 
-            return supertest(app)
-            .post('/api/user')
-            .send(newUser)
-            .expect(201)
-            .expect((res)=> {
-                expect(res.body).to.have.property('id');
-                expect(res.body.user_name).to.eql(newUser.user_name);
-                expect(res.body.full_name).to.eql(newUser.full_name);
-                expect(res.body).to.not.have.property('password');
-                expect(res.headers.location).to.eql(`/api/user/${res.body.id}`);
-                const expectedDate = new Date().toLocaleString();
-                const actualDate = new Date(res.body.date_created).toLocaleString();
-                expect(actualDate).to.eql(expectedDate);
-            });
-        })
-        it(`stores the new user in db with bcryped password` , () => {
-            const newUser = {
-                user_name : 'test user_name',
-                full_name : 'test full_name',
-                password  : '11!!AAaa',
-            };
+        return supertest(app)
+          .post("/api/user")
+          .send(newUser)
+          .expect(201)
+          .expect((res) => {
+            expect(res.body).to.have.property("id");
+            expect(res.body.user_name).to.eql(newUser.user_name);
+            expect(res.body.full_name).to.eql(newUser.full_name);
+            expect(res.body).to.not.have.property("password");
+            expect(res.headers.location).to.eql(`/api/user/${res.body.id}`);
+            const expectedDate = new Date().toLocaleString();
+            const actualDate = new Date(res.body.date_created).toLocaleString();
+            expect(actualDate).to.eql(expectedDate);
+          });
+      });
+      it(`stores the new user in db with bcryped password`, () => {
+        const newUser = {
+          user_name: "test user_name",
+          full_name: "test full_name",
+          password: "11!!AAaa",
+        };
 
-            return supertest(app)
-            .post('/api/user')
-            .send(newUser)
-            .expect((res)=>
+        return supertest(app)
+          .post("/api/user")
+          .send(newUser)
+          .expect((res) =>
             db
-            .from('yourmoon_user')
-            .select('*')
-            .where({id: res.body.id})
-            .first()
-            .then((row)=> {
+              .from("yourmoon_user")
+              .select("*")
+              .where({ id: res.body.id })
+              .first()
+              .then((row) => {
                 expect(row.user_name).to.eql(newUser.user_name);
                 expect(row.full_name).to.eql(newUser.full_name);
                 const expectedDate = new Date().toLocaleString();
@@ -177,12 +177,12 @@ describe("Users Endpoints", () => {
                 expect(actualDate).to.eql(expectedDate);
 
                 return bcrypt.compare(newUser.password, row.password);
-            })
-            .then((compareMatch) => {
+              })
+              .then((compareMatch) => {
                 expect(compareMatch).to.be.true;
-            })
-            )
-        })
+              })
+          );
+      });
     });
   });
 });

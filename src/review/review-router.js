@@ -60,6 +60,6 @@ reviewRouter
         res.status(204).end();
       })
       .catch(next);
-  })
+  });
 
 module.exports = reviewRouter;

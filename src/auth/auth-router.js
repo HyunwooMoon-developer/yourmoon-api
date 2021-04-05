@@ -14,30 +14,29 @@ authRouter.post("/login", jsonParser, (req, res, next) => {
       return res.status(400).json({
         error: `Missing ${key} in request body`,
       });
-      AuthService.getUserWithUserName(req.app.get('db'), loginUser.user_name)
-      .then((dbUser)=> {
-          if(!dbUser)
+  AuthService.getUserWithUserName(req.app.get("db"), loginUser.user_name)
+    .then((dbUser) => {
+      if (!dbUser)
+        return res.status(400).json({
+          error: `Incorrect user_name or password`,
+        });
+      return AuthService.comparePassword(
+        loginUser.password,
+        dbUser.password
+      ).then((compareMatch) => {
+        if (!compareMatch)
           return res.status(400).json({
-              error : `Incorrect user_name or password`,
+            error: `Incorrect user_name or password`,
           });
-          return AuthService.comparePassword(
-              loginUser.password,
-              dbUser.password
-          )
-          .then((compareMatch)=> {
-            if(!compareMatch)  
-            return res.status(400).json({
-                  error : `Incorrect user_name or password`
-              });
-              const sub = dbUser.user_name;
-              const payload = {user_id : dbUser.id, full_name : dbUser.full_name}
+        const sub = dbUser.user_name;
+        const payload = { user_id: dbUser.id, full_name: dbUser.full_name };
 
-              res.send({
-                  authToken : AuthService.createJWT(sub, payload),
-              });
-          });
-      })
-      .catch(next)
+        res.send({
+          authToken: AuthService.createJWT(sub, payload),
+        });
+      });
+    })
+    .catch(next);
 });
 
 module.exports = authRouter;

@@ -13,21 +13,15 @@ const CartService = {
           .select("*")
           .where({ "ci.cart_id": cart.id })
           .leftJoin("items", { "ci.item_id": "items.id" })
-          .leftJoin("color",{"ci.color_id" : "color.id"})
-          .column({"color" : "color.name"})
-          .leftJoin("scent", {"ci.scent_id" : "scent.id"})
-          .column({"scent" : "scent.name"})
+          .leftJoin("color", { "ci.color_id": "color.id" })
+          .column({ color: "color.name" })
+          .leftJoin("scent", { "ci.scent_id": "scent.id" })
+          .column({ scent: "scent.name" })
       );
-
-    /*return db
-      .from("items")
-      .select("items.id", "items.item_name", "items.img", "items.price")
-      .leftJoin('cart_item AS ci', {'cart.id' : 'ci.cart_id'})
-      .where({ "cart.user_id": user_id });*/
   },
 
   getCartItem(db, cart_item = {}) {
-      console.log("cart_item",cart_item)
+    console.log("cart_item", cart_item);
     return db
       .from("cart_item")
       .select("*")
@@ -68,7 +62,7 @@ const CartService = {
   },
 
   updateCartItem(db, id, updateItem) {
-    return db("cart_item").where({id}).update(updateItem);
+    return db("cart_item").where({ id }).update(updateItem);
   },
 };
 

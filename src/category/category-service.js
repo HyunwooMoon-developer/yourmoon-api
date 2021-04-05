@@ -1,10 +1,10 @@
 /* eslint-disable no-undef */
 const CategoryServices = {
-  getAllCategories(knex) {
-    return knex.select("*").from("categories");
+  getAllCategories(db) {
+    return db.select("*").from("categories");
   },
-  getCategoryById(knex, id) {
-    return knex.from("categories").where("id", id).first();
+  getCategoryById(db, id) {
+    return db.from("categories").where("id", id).first();
   },
 };
 

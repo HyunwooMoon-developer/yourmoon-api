@@ -7,7 +7,7 @@ const helpers = require("./test-helpers");
 describe(`Categories Endpoints`, () => {
   let db;
 
-  const testCategories = helpers.makeCategoriesArray();
+  const { testCategories } = helpers.makeYourmoonFixture();
 
   before("make knex instance", () => {
     db = knex({

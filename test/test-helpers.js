@@ -33,77 +33,139 @@ function makeCategoriesArray() {
     {
       id: 1,
       category_name: "CANDLE",
-      tax: "10",
     },
     {
       id: 2,
       category_name: "ETC",
-      tax: "15",
     },
   ];
 }
 
-function makeItemsArray() {
+function makeItemsArray(users) {
   return [
     {
       id: 1,
-      item_name: 'test1',
-      price: '10.00',
-      discount: '10',
-      total_qty: '100',
-      img: '../src/img/sample.jpg',
-      description: 'description',
+      item_name: "test1",
+      price: "10.00",
+      img: [
+        "https://i.etsystatic.com/23622696/r/il/fb795c/2583878936/il_1588xN.2583878936_n7e6.jpg",
+      ],
+      description: "description",
       date_created: "2021-03-05T16:28:32.615Z",
       category_id: 1,
+      user_id: users[0].id,
     },
     {
-        id: 2,
-      item_name: 'test2',
-      price: '10.00',
-      discount: '10',
-      total_qty: '100',
-      img: '../src/img/sample.jpg',
-      description: 'description',
+      id: 2,
+      item_name: "test2",
+      price: "10.00",
+      img: [
+        "https://i.etsystatic.com/23622696/r/il/fb795c/2583878936/il_1588xN.2583878936_n7e6.jpg",
+      ],
+      description: "description",
       date_created: "2021-03-05T16:28:32.615Z",
       category_id: 2,
-    }
+      user_id: users[0].id,
+    },
   ];
 }
 
+function makeReviewsArray(users, items) {
+  return [
+    {
+      id: 1,
+      rating: 5,
+      user_id: users[1].id,
+      item_id: items[0].id,
+      date_created: "2021-03-05T16:28:32.615Z",
+      text: "test 1",
+    },
+    {
+      id: 2,
+      rating: 4,
+      user_id: users[2].id,
+      item_id: items[0].id,
+      date_created: "2021-03-05T16:28:32.615Z",
+      text: "test 1",
+    },
+  ];
+}
+
+function makeExpectedItem(users, item, reviews = []) {
+  const user = users.find(user=> user.id === item.user_id);
+
+  const itemReviews = reviews.filter((review) => review.item_id === item.id);
+
+  const number_of_reviews = itemReviews.length;
+  const average_review_rating = calculateAvarage(itemReviews);
+
+  return {
+    id: item.id,
+    item_name: item.item_name,
+    price: item.price,
+    img: item.img,
+    scents : [null],
+    colors : [null],
+    description: item.description,
+    date_created: item.date_created,
+    category_id: item.category_id,
+    number_of_reviews,
+    average_review_rating,
+    user: {
+      id: user.id,
+      user_name: user.user_name,
+      full_name: user.full_name,
+      date_created: user.date_created,
+    },
+  };
+}
+
+function makeExpectedItemReviews(users, itemId, reviews){
+  const expectedReviews = reviews.filter(review => review.item_id === itemId)
+  
+  return expectedReviews.map(review => {
+    const reviewUser = users.find(user => user.id === review.user_id)
+    return{
+      id: review.id,
+      text: review.text,
+      rating : review.rating,
+      date_created : review.date_created,
+      user : {
+        id: reviewUser.id,
+        user_name : reviewUser.user_name,
+        full_name : reviewUser.full_name,
+        date_created : reviewUser.date_created,
+      }
+    }
+  })
+}
+
+function calculateAvarage(reviews) {
+  if (!reviews.length) return 0;
+
+  const sum = reviews.map((review) => review.rating).reduce((a, b) => a + b);
+  return Math.round(sum / reviews.length);
+}
+
 function cleanTable(db) {
-  return db.transaction((trx) =>
-    trx
-      .raw(
-        `TRUNCATE 
-            yourmoon_user,
-            categories,
-            items,
-            item_scent,
-            item_color,
-            cart,
-            review`
-      )
-      .then(() =>
-        Promise.all([
-          trx.raw(
-            `ALTER SEQUENCE yourmoon_user_id_seq minvalue 0 START WITH 1`
-          ),
-          trx.raw(`ALTER SEQUENCE categories_id_seq minvalue 0 START WITH 1`),
-          trx.raw(`ALTER SEQUENCE items_id_seq minvalue 0 START WITH 1`),
-          trx.raw(`ALTER SEQUENCE item_scent_id_seq minvalue 0 START WITH 1`),
-          trx.raw(`ALTER SEQUENCE item_color_id_seq minvalue 0 START WITH 1`),
-          trx.raw(`ALTER SEQUENCE cart_id_seq minvalue 0 START WITH 1`),
-          trx.raw(`ALTER SEQUENCE review_id_seq minvalue 0 START WITH 1`),
-          trx.raw(`SELECT setval('yourmoon_user_id_seq',0)`),
-          trx.raw(`SELECT setval('categories_id_seq',0)`),
-          trx.raw(`SELECT setval('items_id_seq',0)`),
-          trx.raw(`SELECT setval('item_scent_id_seq',0)`),
-          trx.raw(`SELECT setval('item_color_id_seq',0)`),
-          trx.raw(`SELECT setval('cart_id_seq',0)`),
-          trx.raw(`SELECT setval('review_id_seq',0)`),
-        ])
-      )
-  );
+  return db.raw(`TRUNCATE
+  review,
+  items,
+  categories,
+  yourmoon_user,
+  scent_item,
+  color_item,
+  scent,
+  color
+  RESTART IDENTITY CASCADE`)
+}
+function makeYourmoonFixture() {
+  const testUsers = makeUsersArray();
+  const testCategories = makeCategoriesArray();
+  const testItems = makeItemsArray(testUsers);
+  const testReviews = makeReviewsArray(testUsers, testItems);
+
+  return { testUsers, testCategories, testItems, testReviews };
 }
 
 function seedUsers(db, users) {
@@ -122,6 +184,13 @@ function seedUsers(db, users) {
     );
 }
 
+function seedItems(db, users, categories,items, reviews = []) {
+  return seedUsers(db, users)
+    .then(() => db.into("categories").insert(categories))
+    .then(() => db.into("items").insert(items))
+    .then(() => reviews.length && db.into("review").insert(reviews));
+}
+
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
   const token = jwt.sign({ user_id: user.id }, secret, {
     subject: user.user_name,
@@ -133,9 +202,14 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
 module.exports = {
   makeUsersArray,
   makeCategoriesArray,
+  makeItemsArray,
+  makeReviewsArray,
+  makeExpectedItem,
+  makeExpectedItemReviews,
   makeAuthHeader,
   seedUsers,
-  makeItemsArray,
+  seedItems,
 
+  makeYourmoonFixture,
   cleanTable,
 };
