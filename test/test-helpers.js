@@ -92,7 +92,7 @@ function makeReviewsArray(users, items) {
 }
 
 function makeExpectedItem(users, item, reviews = []) {
-  const user = users.find(user=> user.id === item.user_id);
+  const user = users.find((user) => user.id === item.user_id);
 
   const itemReviews = reviews.filter((review) => review.item_id === item.id);
 
@@ -104,8 +104,8 @@ function makeExpectedItem(users, item, reviews = []) {
     item_name: item.item_name,
     price: item.price,
     img: item.img,
-    scents : [null],
-    colors : [null],
+    scents: [null],
+    colors: [null],
     description: item.description,
     date_created: item.date_created,
     category_id: item.category_id,
@@ -120,24 +120,24 @@ function makeExpectedItem(users, item, reviews = []) {
   };
 }
 
-function makeExpectedItemReviews(users, itemId, reviews){
-  const expectedReviews = reviews.filter(review => review.item_id === itemId)
-  
-  return expectedReviews.map(review => {
-    const reviewUser = users.find(user => user.id === review.user_id)
-    return{
+function makeExpectedItemReviews(users, itemId, reviews) {
+  const expectedReviews = reviews.filter((review) => review.item_id === itemId);
+
+  return expectedReviews.map((review) => {
+    const reviewUser = users.find((user) => user.id === review.user_id);
+    return {
       id: review.id,
       text: review.text,
-      rating : review.rating,
-      date_created : review.date_created,
-      user : {
+      rating: review.rating,
+      date_created: review.date_created,
+      user: {
         id: reviewUser.id,
-        user_name : reviewUser.user_name,
-        full_name : reviewUser.full_name,
-        date_created : reviewUser.date_created,
-      }
-    }
-  })
+        user_name: reviewUser.user_name,
+        full_name: reviewUser.full_name,
+        date_created: reviewUser.date_created,
+      },
+    };
+  });
 }
 
 function calculateAvarage(reviews) {
@@ -157,7 +157,7 @@ function cleanTable(db) {
   color_item,
   scent,
   color
-  RESTART IDENTITY CASCADE`)
+  RESTART IDENTITY CASCADE`);
 }
 function makeYourmoonFixture() {
   const testUsers = makeUsersArray();
@@ -184,7 +184,7 @@ function seedUsers(db, users) {
     );
 }
 
-function seedItems(db, users, categories,items, reviews = []) {
+function seedItems(db, users, categories, items, reviews = []) {
   return seedUsers(db, users)
     .then(() => db.into("categories").insert(categories))
     .then(() => db.into("items").insert(items))

@@ -21,7 +21,6 @@ const CartService = {
   },
 
   getCartItem(db, cart_item = {}) {
-    console.log("cart_item", cart_item);
     return db
       .from("cart_item")
       .select("*")

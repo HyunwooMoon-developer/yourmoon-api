@@ -29,6 +29,7 @@ const ItemsService = {
       .leftJoin("review", { "i.id": "review.item_id" })
       .leftJoin("yourmoon_user AS user", "i.user_id", "user.id")
       .groupBy("i.id", "user.id")
+      .orderBy("date_created", "desc");
   },
   getItemById(db, id) {
     return this.getAllItems(db).where("i.id", id).first();

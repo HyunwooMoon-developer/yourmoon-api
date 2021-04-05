@@ -44,7 +44,6 @@ usersRouter.post("/", jsonParser, async (req, res, next) => {
       date_created: "now()",
     };
 
-    console.log("newCart", newCart);
     await CartService.insertCart(req.app.get("db"), newCart);
 
     res

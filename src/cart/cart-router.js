@@ -23,7 +23,6 @@ cartRouter
   .post(jsonParser, (req, res, next) => {
     const db = req.app.get("db");
 
-    console.log("req.body", req.body);
     const { item_id, qty, scent, color } = req.body;
     const user_id = req.user.id;
     CartService.getCartForUser(db, user_id)
@@ -53,7 +52,6 @@ cartRouter
   })
   .delete(jsonParser, (req, res, next) => {
     const db = req.app.get("db");
-    console.log(req.body);
     const { cart_item_id } = req.body;
 
     CartService.deleteItemToCart(db, cart_item_id)
