@@ -54,7 +54,7 @@ VALUES
 
 INSERT INTO scent(name)
 VALUES
-('NONE'),
+('-NONE-'),
 ('LAVENDER'),
 ('PEPPERMINT EUCALYPTUS'),
 ('BLACK SEA'),
@@ -171,7 +171,7 @@ VALUES
 
 INSERT INTO color(name)
 VALUES
-('NONE'),
+('-NONE-'),
 ('IVORY'),
 ('YELLOW'),
 ('BABY PINK'),
